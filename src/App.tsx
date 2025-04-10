@@ -6,19 +6,27 @@ import {
   Share2,
   AlertCircle,
   BookOpen,
+  Loader2,
+  AlertTriangle,
 } from "lucide-react";
 
-type ResultLink = {
-  id: number;
-  url: string;
-  status: string;
+type ResultResponse = {
+  resultDate: string; // ISO string, will be parsed with new Date()
+  notificationDate: string; // Already a display string
+  links: {
+    id: number;
+    url: string;
+    status: string;
+  }[];
 };
 
 function App() {
   const [timeLeft, setTimeLeft] = useState<string>("");
   const [showNotification, setShowNotification] = useState(false);
-  const resultDate = new Date("2025-04-11T10:00:00");
-  const [links, setLinks] = useState<ResultLink[]>([]);
+  const [links, setLinks] = useState<ResultResponse["links"]>([]);
+  const [resultDate, setResultDate] = useState<Date | null>(null);
+  const [notificationText, setNotificationText] = useState<string | null>(null);
+
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -36,8 +44,10 @@ function App() {
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-      const data: ResultLink[] = await response.json();
-      setLinks(data);
+      const data: ResultResponse = await response.json();
+      setLinks(data.links);
+      setResultDate(new Date(data.resultDate)); // Used for countdown
+      setNotificationText(data.notificationDate); // Display as-is
     } catch (err) {
       setError((err as Error).message);
     } finally {
@@ -45,7 +55,10 @@ function App() {
     }
   };
 
+  // Fix this useEffect to avoid null access
   useEffect(() => {
+    if (!resultDate) return; // FIXED
+
     const timer = setInterval(() => {
       const now = new Date();
       const difference = resultDate.getTime() - now.getTime();
@@ -67,7 +80,7 @@ function App() {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [resultDate]); // FIXED: added dependency
 
   const lastUsedPortal = localStorage.getItem("lastUsedPortal");
 
@@ -75,8 +88,22 @@ function App() {
     localStorage.setItem("lastUsedPortal", portalId.toString());
   };
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error}</p>;
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center w-full h-screen">
+        <Loader2 className="animate-spin w-8 h-8 text-emerald-500" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex justify-center items-center w-full h-screen text-red-500 gap-2">
+        <AlertTriangle className="w-6 h-6" />
+        <p>Error: {error}</p>
+      </div>
+    );
+  }
 
   const handleShare = () => {
     if (navigator.share) {
@@ -120,13 +147,13 @@ function App() {
       </header>
 
       {/* Notification */}
-      {showNotification && (
+      {showNotification && notificationText && (
         <div className="bg-gray-800 border-l-4 border-emerald-400 p-4">
           <div className="container mx-auto px-4 flex items-center">
             <AlertCircle className="h-5 w-5 text-emerald-400 mr-2" />
             <p className="text-gray-300">
-              SEBA HSLC (Class 10) Results will be declared on April 11th, 2025
-              at 10:00 AM. Keep your roll number ready!
+              SEBA HSLC (Class 10) Results will be declared on{" "}
+              {notificationText}. Keep your roll number ready!
             </p>
           </div>
         </div>
