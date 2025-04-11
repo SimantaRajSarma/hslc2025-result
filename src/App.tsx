@@ -186,7 +186,16 @@ function App() {
                 href={link.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={() => handlePortalClick(link.id)}
+                onClick={(e) => {
+                  if (link.url === "#") {
+                    e.preventDefault(); // Stop default navigation
+                    alert(
+                      "This link is currently not available. Please try again later."
+                    );
+                    return;
+                  }
+                  handlePortalClick(link.id);
+                }}
                 className={`flex items-center justify-center space-x-2 p-4 rounded-lg transition-all duration-300 ${
                   lastUsedPortal === link.id.toString()
                     ? "bg-emerald-500 text-white"
