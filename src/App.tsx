@@ -109,8 +109,8 @@ function App() {
     if (navigator.share) {
       navigator
         .share({
-          title: "HSLC 2025 Result Link",
-          text: "Check out the HSLC 2025 result here!",
+          title: "HS 2025 Result Link",
+          text: "Check out the HS 2025 result here!",
           url: window.location.href,
         })
         .then(() => console.log("Shared successfully"))
@@ -130,7 +130,7 @@ function App() {
               {/* <GraduationCap className="h-8 w-8 text-emerald-400" /> */}
               <div>
                 <h1 className="text-2xl font-bold text-white">You Can Learn</h1>
-                <p className="text-sm text-gray-400">Assam HSLC Results 2025</p>
+                <p className="text-sm text-gray-400">Assam HS Results 2025</p>
               </div>
             </div>
             <button
@@ -151,10 +151,7 @@ function App() {
         <div className="bg-gray-800 border-l-4 border-emerald-400 p-4">
           <div className="container mx-auto px-4 flex items-center">
             <AlertCircle className="h-5 w-5 text-emerald-400 mr-2" />
-            <p className="text-gray-300">
-              SEBA HSLC (Class 10) Results will be declared on{" "}
-              {notificationText}. Keep your roll number ready!
-            </p>
+            <p className="text-gray-300">{notificationText}</p>
           </div>
         </div>
       )}
@@ -223,7 +220,7 @@ function App() {
           <ul className="space-y-4 text-gray-300">
             <li className="flex items-start">
               <span className="mr-2">1.</span>
-              Keep your HSLC roll number and registration number ready
+              Keep your roll number and registration number ready
             </li>
             <li className="flex items-start">
               <span className="mr-2">2.</span>
@@ -257,7 +254,7 @@ function App() {
       <footer className="bg-gray-800 border-t border-gray-700 mt-12">
         <div className="container mx-auto px-4 py-6">
           <p className="text-center text-gray-400">
-            © 2025 You Can Learn | SEBA HSLC Results Portal
+            © 2025 You Can Learn | AHSEC 2025 Results Portal
           </p>
         </div>
       </footer>
